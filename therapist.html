@@ -6,32 +6,60 @@ p {
  line-height: 50%;
 }
 </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
 </head>
 <body onload="initialize()">
-<h1>Eliza</h1>
-<p>Write here: <input id="textbox" size="70"/></p>
-<p><button onclick="submitLine()">Submit</button></p>
+
+<h1>Therapist Bot</h1>
+<p><button onclick="submitLine()">Get Therapy</button><input id="textbox" size="40"/></p>
+
 <div id="conversation"></div>
 <script>
+
+//to do:
+//address when user asks a question but doesn't use a question mark 
+     //look for who, what, why as the first word plus no question mark at the end 
+	 //and them append one for them? then remove it before displaying?  
+	 //
+//NLP responses
+//respond to memespeak
+//responses that include giphy gifs using api calls 
+//respond to more keywords
+
+
 var therapySession;
 
-//add logic to use this 
-var emptyResponses = [
-	"xxxx.",
-	"xx.",
-	"xxxxxx?",
-	"xxxx.",
-	"xxxx...",
-	"x."];
+//Responses when ?? use meme/gifs or say something mildly rude
+var memeResponses = [
+	"",
+	"",
+	"",
+	"",
+	"",
+	""];
 
+//Responses when user clicks submit while input is empty
+var emptyLineResponses = [
+	"*crickets chirping*",
+	"*beep boop*",
+	"Hello??",
+	"Try typing something, genius.",
+	"and....?",
+	"You didn't say anything."];
+
+//Responses when no other response will work	
 var genericResponses = [
-	"Uh-huh.",
+	"Uh huh.",
 	"Go on.",
 	"Why do you say that?",
 	"That's very interesting.",
 	"Fascinating...",
-	"Keep talking."];
+	"Keep talking.",
+	"Wow, okay."];
  
+//Responses when user asks a question
 const questionResponses = [
 	"Why do you ask that?",
 	"What do <em>you</em> think?",
@@ -39,12 +67,15 @@ const questionResponses = [
 	"How long have you wanted to know that?",
 	"That depends on who you ask."];
  
+//Responses when user ends statement with exclamation 
 const exclamationResponses = [
 	"Please calm down.",
 	"No need to get so excited.",
 	"You sound very passionate about that.",
 	"Would you care to restate that in a more neutral tone?"];
  
+//values for switching point of view; 
+//when user says 'I ....' computer switches POV and repeats the statement 
 const povSwitches = {
 	"I": "you",
 	"i": "you",
@@ -60,6 +91,8 @@ const povSwitches = {
 	"i'd": "you'd",
 	"i'll": "you'll"
 }
+
+//applied right before POV switch response
 const questionStarts = [
 	"Why do you say that",
 	"How is it that",
@@ -67,20 +100,21 @@ const questionStarts = [
 	"And why is it that",
 	"Can you explain why you say that"];
 
+//called when program loads	
 function initialize() {
-	therapySession = "<p> I am the psychotherapist. What is your problem? </p>";
+	therapySession = "<p> I am psychotherapist. What is your problem? </p>";
 	conversation.innerHTML = therapySession;
+	random();
 }
 
+//called when submit button pressed
 function submitLine() {
-	var patientLine = textbox.value;
-	therapySession += "<p> <em>" + patientLine + "</em> </p>";
+	var patientLine = textbox.value.trim();
+	$("#textbox").val(""); 
+	
  	var therapistLine;
 	
-	if (patientLine == "") {
-	therapySession += "Please talk to me";
-	}
-	
+	//Choose a response based on last character (question or exclamation)
 	if (lastChar(patientLine) == "?") {
 		therapistLine = randomElement(questionResponses);
 	} else if (lastChar(patientLine) == "!") {
@@ -88,48 +122,100 @@ function submitLine() {
 	} else {
 		therapistLine = createQuestion(patientLine);
 	}
+	
+	
+	//Response if patientLine is empty
+	if (patientLine == "") {
+	therapistLine = randomElement(emptyLineResponses);
+	}
+	
+    	//see if patientLine warrants a gif
+	if (patientLine == "Giphy") {
+	    random();
+		therapistLine = "<iframe src=\"//giphy.com/embed/" + myObj.data.id + " \" width=\"300\" frameBorder=\"0\"></iframe>";
+		patientLine = "";
+	}
+	
 	// Still no good response, so use a basic response. 
 	if (therapistLine == null) {
 		therapistLine = randomElement(genericResponses);
 	} 
+	
+	//adds the next line to the session
+	therapySession += "<p> <em>" + patientLine + "</em> </p>";
 	therapySession += "<p>" + therapistLine + "</p>";
 	conversation.innerHTML = therapySession;
 }
 
+//returns a random element from the array passed in
 function randomElement(myArray) {
 	var index = Math.floor(Math.random() * myArray.length);
 	return myArray[index];
 }
 
+//returns the last character of the string passed it
 function lastChar(myString) {
 	return myString.substring(myString.length - 1);
 }
 
+//If patient line includes "you," create a question based on the line
 function createQuestion(patientLine) {
 	if (patientLine.toLowerCase().indexOf("you") != -1) {
 		return null;
 	}
+	
+	//remove the period if there is one
 	if (lastChar(patientLine) == ".") {
 		patientLine = patientLine.substring(0, patientLine.length - 1);
 	}		
+	
+	//add spaces at beginning and end of new line
 	var modifiedLine = " " + patientLine + " ";
 	var found = false;
+	
+	//loop through properties and replace POV values
 	for (var property in povSwitches) {
 		if (povSwitches.hasOwnProperty(property)) {
 			var modifiedProperty = " " + property + " ";
+			//regular expression object to replace value in all strings
+			var propRegEx = new RegExp(modifiedProperty,"g"); 
 		if (modifiedLine.indexOf(modifiedProperty) != -1) {
-			modifiedLine = modifiedLine.replace(modifiedProperty,
+			modifiedLine = modifiedLine.replace(propRegEx,
 				" " + povSwitches[property] + " ");
+			//set to true if replacement is made, so we know a match to one of the pov values was found	
 			found = true;
 		}
 		}
 	}
+	
+	//If a replacement was made, returns the question
 	if (found) {
+		//remove trailing spaces
 		modifiedLine = modifiedLine.substring(0, modifiedLine.length - 1);
+		
+		//returns full questions
 		return randomElement(questionStarts) + " " + modifiedLine + "?";
-	} 
+	}
+	
+	//return null when no replacement made
 	return null;
 }
+
+
+function random() {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			myObj = JSON.parse(this.responseText);
+			//therapistLine = "<iframe src=\"//giphy.com/embed/" + myObj.data.id + " \" width=\"480\" height=\"270\" frameBorder=\"0\" class=\"giphy-embed\" allowFullScreen></iframe><p><a href=\"https://giphy.com/gifs/berniesanders-bernie-sanders-bill-nye-3og0IJQicQjPDjXE2I\">via GIPHY</a></p>";
+			//$("#text").html("<iframe src=\"//giphy.com/embed/" + myObj.data.id + " \" width=\"480\" height=\"270\" frameBorder=\"0\" class=\"giphy-embed\" allowFullScreen></iframe><p><a href=\"https://giphy.com/gifs/berniesanders-bernie-sanders-bill-nye-3og0IJQicQjPDjXE2I\">via GIPHY</a></p>");            
+
+		}
+	};
+	xmlhttp.open("GET", "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=american+psycho", true);
+	xmlhttp.send();
+}
+
 </script>
 </body>
 </html>
