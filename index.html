@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="therapist.js"></script>
+</head>
+
+//initialize needs to be defined
+<body onload="initialize()">
+
+<p style="font-family: 'Rock Salt'; font-size: 22px; margin-bottom: 5px">Try these!</p>
+
+<ul class="hints">
+<li>Make a non-question statement containing the work "I"</li>
+<li>Ask a question (end a statement with a question mark)</li>
+<li>End a statement with an exclamation point</li>
+<li>Submit only the word "gif"</li>
+<li>Submit a blank line</li>
+</ul>
+
+<h1>Therapist Bot</h1>
+
+//sumbitLine needs to be defined
+<p><button onclick="submitLine()">Send</button><input id="textbox"/></p>
+<div id="conversation"></div>
+</body>
+</html>
