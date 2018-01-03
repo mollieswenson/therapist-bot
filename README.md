@@ -97,7 +97,7 @@ Returns a random element from the specified array.
 
 # Enumerations
 
-Property | Name | Description
+Property | Description | Value
 ---|---|---
 Generic     | Generic answer that does not make use of the patient response                                                   | 0
 Question    | Answer to a question                                                                                            | 1
