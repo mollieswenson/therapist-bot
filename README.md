@@ -1,10 +1,10 @@
-This code documentation records the constants, functions, and enumerations used in the JavaScript code of this application. 
-
-I wrote this app for a course on code documentation. The app is a (mildly rude) therapist who is happy to discuss your problems for hours on end. Try a working demo therapy session at <https://mollieswenson.github.io/therapist-bot/>.
-
 # Therapist Bot Code Docs
 
-See a pdf version of this at <https://github.com/mollieswenson/therapist-bot/blob/master/Therapist%20Bot%20Documentation.pdf>.
+This code documentation records the constants, functions, and enumerations used in the JavaScript code of this application. Also available as a [pdf](https://github.com/mollieswenson/therapist-bot/blob/master/Therapist%20Bot%20Documentation.pdf).
+
+## About the app 
+
+I wrote this app for a course on code documentation. The app is a (mildly rude) therapist who is happy to discuss your problems for hours on end. Try a working demo therapy session at <https://mollieswenson.github.io/therapist-bot/>.
 
 # Constants
 
