@@ -97,9 +97,10 @@ Returns a random element from the specified array.
 
 # Enumerations
 
-Property Name                                                                                                            | Description | Value
------------ | --------------------------------------------------------------------------------------------------------------- | ----------- | -----
+Property | Name | Description
+---|---|---
 Generic     | Generic answer that does not make use of the patient response                                                   | 0
 Question    | Answer to a question                                                                                            | 1
 Exclamation | Answer to a patient response that ends with an exclamation point                                                | 2
 PointOfView | Answer that makes use of the patient response by switching the point of view from first person to second person | 3
+
